@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Blackjack - Classic 21 with hit, stand, double, and split" />
+    <title>Blackjack — GamblingDen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="blackjack.css" />
+  </head>
+  <body>
+    <!-- Global Header -->
+    <header class="global-header">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">🎰</span>
+          <span class="logo-text">GamblingDen</span>
+        </a>
+      </div>
+      <div class="header-center">
+        <div class="xp-bar-container">
+          <div class="xp-level">
+            <span class="level-badge" id="level-badge">Lvl 1</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            <span class="xp-text" id="xp-text">0 / 100 XP</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">
+          <span class="sound-on">🔊</span>
+          <span class="sound-off">🔇</span>
+        </button>
+        <div class="balance-display">
+          <span class="balance-label">Balance</span>
+          <span class="balance-amount" id="balance-amount">€100.00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Main Content -->
+    <main class="game-container blackjack-container">
+      <div class="game-header">
+        <h1 class="game-title">🃏 Blackjack</h1>
+        <a href="index.html" class="back-link">← Back to Lobby</a>
+      </div>
+
+      <div class="blackjack-table">
+        <!-- Dealer Area -->
+        <div class="dealer-area">
+          <div class="hand-label">
+            <span>Dealer</span>
+            <span class="hand-value" id="dealer-value"></span>
+          </div>
+          <div class="cards-container" id="dealer-cards"></div>
+        </div>
+
+        <!-- Game Message -->
+        <div class="game-message" id="game-message"></div>
+
+        <!-- Player Area -->
+        <div class="player-area">
+          <div class="hand-label">
+            <span>Your Hand</span>
+            <span class="hand-value" id="player-value"></span>
+          </div>
+          <div class="cards-container" id="player-cards"></div>
+        </div>
+
+        <!-- Betting Controls (shown before deal) -->
+        <div class="betting-controls" id="betting-controls">
+          <div class="bet-chips">
+            <button class="chip" data-value="1">€1</button>
+            <button class="chip" data-value="5">€5</button>
+            <button class="chip" data-value="10">€10</button>
+            <button class="chip" data-value="25">€25</button>
+          </div>
+          <div class="current-bet">
+            <span class="bet-label">Bet:</span>
+            <span class="bet-value" id="current-bet">€0.00</span>
+          </div>
+          <div class="bet-actions">
+            <button class="btn" id="clear-bet-btn">Clear</button>
+            <button class="btn btn-primary" id="deal-btn" disabled>Deal</button>
+          </div>
+        </div>
+
+        <!-- Game Controls (shown during play) -->
+        <div class="game-controls hidden" id="game-controls">
+          <button class="btn btn-primary" id="hit-btn">Hit</button>
+          <button class="btn btn-success" id="stand-btn">Stand</button>
+          <button class="btn" id="double-btn">Double</button>
+          <button class="btn" id="split-btn" disabled>Split</button>
+        </div>
+
+        <!-- Result Controls (shown after hand) -->
+        <div class="result-controls hidden" id="result-controls">
+          <button class="btn btn-primary btn-lg" id="new-hand-btn">New Hand</button>
+        </div>
+      </div>
+
+      <!-- Rules -->
+      <div class="game-rules">
+        <h3>Rules</h3>
+        <ul>
+          <li>Blackjack pays <strong>3:2</strong></li>
+          <li>Dealer stands on 17</li>
+          <li>Double down on any two cards</li>
+          <li>Split pairs (one time only)</li>
+          <li>Insurance pays 2:1 when dealer has Ace</li>
+        </ul>
+      </div>
+    </main>
+
+    <footer class="global-footer">
+      <p>Virtual credits only. No real money. Play responsibly. © 2026 GamblingDen</p>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script src="blackjack.js"></script>
+  </body>
+</html>

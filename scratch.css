@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCRATCH CARDS STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.scratch-container {
+  max-width: 600px;
+}
+
+.scratch-game {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card Selection */
+.card-selection {
+  text-align: center;
+}
+
+.card-selection h2 {
+  font-size: 20px;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.card-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.card-option:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.card-option.featured {
+  border-color: var(--accent-gold);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), var(--bg-elevated));
+}
+
+.card-option.featured:hover {
+  box-shadow: var(--shadow-lg), 0 0 20px var(--accent-gold-glow);
+}
+
+.card-tier {
+  font-size: 48px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.card-cost {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.card-max {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Active Card */
+.active-card {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.active-card.hidden,
+.scratch-result.hidden,
+.card-selection.hidden {
+  display: none;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.scratch-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Scratch Grid */
+.scratch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.scratch-cell {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.scratch-cell canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+}
+
+.scratch-cell .prize {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  background: linear-gradient(135deg, var(--bg-deep), var(--bg-elevated));
+  z-index: 0;
+}
+
+.scratch-cell .prize.revealed {
+  animation: revealBounce 0.4s ease;
+}
+
+@keyframes revealBounce {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.scratch-cell.winner .prize {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+  box-shadow: inset 0 0 20px var(--accent-gold-glow);
+  animation: winGlow 1s ease infinite alternate;
+}
+
+@keyframes winGlow {
+  from { box-shadow: inset 0 0 20px var(--accent-gold-glow); }
+  to { box-shadow: inset 0 0 40px var(--accent-gold-glow); }
+}
+
+/* Card Footer */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.match-info {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Result */
+.scratch-result {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.result-icon {
+  font-size: 72px;
+  margin-bottom: 16px;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.result-text {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.result-text.win {
+  color: var(--success);
+  text-shadow: 0 0 20px var(--success-glow);
+}
+
+.result-text.lose {
+  color: var(--text-muted);
+}
+
+/* Prize Table */
+.prize-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prize-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+}
+
+.prize-symbol {
+  font-size: 20px;
+}
+
+.prize-mult {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .card-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-option {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px;
+  }
+  
+  .card-tier {
+    font-size: 36px;
+  }
+  
+  .scratch-cell .prize {
+    font-size: 36px;
+  }
+}

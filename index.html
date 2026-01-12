@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="GamblingDen - Premium casino games with slots, blackjack, crash, and scratch cards. Play now!"
+    />
+    <title>GamblingDen — Premium Casino</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Global Header -->
+    <header class="global-header">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">🎰</span>
+          <span class="logo-text">GamblingDen</span>
+        </a>
+      </div>
+      <div class="header-center">
+        <div class="xp-bar-container">
+          <div class="xp-level">
+            <span class="level-badge" id="level-badge">Lvl 1</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            <span class="xp-text" id="xp-text">0 / 100 XP</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          class="daily-bonus-btn"
+          id="daily-bonus-btn"
+          title="Daily Bonus"
+        >
+          <span class="bonus-icon">🎁</span>
+          <span class="bonus-ping" id="bonus-ping"></span>
+        </button>
+        <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">
+          <span class="sound-on">🔊</span>
+          <span class="sound-off">🔇</span>
+        </button>
+        <div class="balance-display" id="balance-display">
+          <span class="balance-label">Balance</span>
+          <span class="balance-amount" id="balance-amount">€100.00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Main Content -->
+    <main class="lobby">
+      <section class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            <span class="hero-highlight">Welcome</span> to the Den
+          </h1>
+          <p class="hero-subtitle">
+            Premium casino experience. Virtual credits only.
+          </p>
+        </div>
+        <div class="hero-particles" aria-hidden="true"></div>
+      </section>
+
+      <section class="games-section">
+        <h2 class="section-title">Choose Your Game</h2>
+        <div class="game-grid">
+          <!-- Slots -->
+          <a href="slots.html" class="game-card" data-game="slots">
+            <div class="game-card-glow"></div>
+            <div class="game-card-content">
+              <div class="game-icon">🎰</div>
+              <h3 class="game-name">Slot Machine</h3>
+              <p class="game-desc">5 paylines • Free spins • Wild symbols</p>
+              <div class="game-tag hot">HOT</div>
+            </div>
+          </a>
+
+          <!-- Blackjack -->
+          <a href="blackjack.html" class="game-card" data-game="blackjack">
+            <div class="game-card-glow"></div>
+            <div class="game-card-content">
+              <div class="game-icon">🃏</div>
+              <h3 class="game-name">Blackjack</h3>
+              <p class="game-desc">Classic 21 • Hit, Stand, Double, Split</p>
+              <div class="game-tag new">NEW</div>
+            </div>
+          </a>
+
+          <!-- Crash -->
+          <a href="crash.html" class="game-card" data-game="crash">
+            <div class="game-card-glow"></div>
+            <div class="game-card-content">
+              <div class="game-icon">🚀</div>
+              <h3 class="game-name">Crash</h3>
+              <p class="game-desc">Rising multiplier • Cash out in time</p>
+              <div class="game-tag new">NEW</div>
+            </div>
+          </a>
+
+          <!-- Scratch Cards -->
+          <a href="scratch.html" class="game-card" data-game="scratch">
+            <div class="game-card-glow"></div>
+            <div class="game-card-content">
+              <div class="game-icon">🎫</div>
+              <h3 class="game-name">Scratch Cards</h3>
+              <p class="game-desc">Instant wins • Match 3 to win</p>
+              <div class="game-tag new">NEW</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="stats-preview">
+        <h2 class="section-title">Your Stats</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="stat-wagered">€0.00</div>
+            <div class="stat-label">Total Wagered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="stat-won">€0.00</div>
+            <div class="stat-label">Total Won</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="stat-biggest">€0.00</div>
+            <div class="stat-label">Biggest Win</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏅</div>
+            <div class="stat-value" id="stat-achievements">0 / 17</div>
+            <div class="stat-label">Achievements</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="achievements-section">
+        <h2 class="section-title">Achievements</h2>
+        <div class="achievements-grid" id="achievements-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Daily Bonus Modal -->
+    <div class="modal-overlay" id="daily-modal">
+      <div class="modal daily-modal">
+        <button class="modal-close" id="daily-modal-close">&times;</button>
+        <h2 class="modal-title">🎁 Daily Bonus</h2>
+        <div class="wheel-container">
+          <div class="wheel" id="bonus-wheel">
+            <div class="wheel-segment" data-prize="10">€10</div>
+            <div class="wheel-segment" data-prize="25">€25</div>
+            <div class="wheel-segment" data-prize="50">€50</div>
+            <div class="wheel-segment" data-prize="15">€15</div>
+            <div class="wheel-segment" data-prize="100">€100</div>
+            <div class="wheel-segment" data-prize="20">€20</div>
+            <div class="wheel-segment" data-prize="35">€35</div>
+            <div class="wheel-segment" data-prize="75">€75</div>
+          </div>
+          <div class="wheel-pointer">▼</div>
+        </div>
+        <button class="btn btn-primary btn-lg" id="spin-wheel-btn">
+          Spin the Wheel!
+        </button>
+        <p class="modal-note" id="daily-status">
+          Come back tomorrow for another spin!
+        </p>
+      </div>
+    </div>
+
+    <footer class="global-footer">
+      <p>
+        Virtual credits only. No real money. Play responsibly. © 2026
+        GamblingDen
+      </p>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script src="lobby.js"></script>
+  </body>
+</html>

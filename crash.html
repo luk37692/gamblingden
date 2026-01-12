@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Crash - Watch the multiplier rise and cash out before it crashes!" />
+    <title>Crash — GamblingDen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="crash.css" />
+  </head>
+  <body>
+    <!-- Global Header -->
+    <header class="global-header">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">🎰</span>
+          <span class="logo-text">GamblingDen</span>
+        </a>
+      </div>
+      <div class="header-center">
+        <div class="xp-bar-container">
+          <div class="xp-level">
+            <span class="level-badge" id="level-badge">Lvl 1</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            <span class="xp-text" id="xp-text">0 / 100 XP</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">
+          <span class="sound-on">🔊</span>
+          <span class="sound-off">🔇</span>
+        </button>
+        <div class="balance-display">
+          <span class="balance-label">Balance</span>
+          <span class="balance-amount" id="balance-amount">€100.00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Main Content -->
+    <main class="game-container crash-container">
+      <div class="game-header">
+        <h1 class="game-title">🚀 Crash</h1>
+        <a href="index.html" class="back-link">← Back to Lobby</a>
+      </div>
+
+      <div class="crash-game">
+        <!-- Multiplier Display -->
+        <div class="crash-display">
+          <canvas id="crash-canvas" width="600" height="300"></canvas>
+          <div class="multiplier-overlay">
+            <div class="multiplier-value" id="multiplier">1.00×</div>
+            <div class="multiplier-status" id="status">Place your bet</div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="crash-history" id="crash-history">
+          <span class="history-label">Previous:</span>
+        </div>
+
+        <!-- Controls -->
+        <div class="crash-controls">
+          <div class="bet-section">
+            <label class="control-label">Bet Amount</label>
+            <div class="bet-input-group">
+              <button class="bet-adjust" id="bet-half">½</button>
+              <input type="number" id="bet-input" class="bet-input" value="10" min="1" step="1" />
+              <button class="bet-adjust" id="bet-double">2×</button>
+            </div>
+          </div>
+
+          <div class="auto-cashout-section">
+            <label class="control-label">
+              <input type="checkbox" id="auto-cashout-toggle" />
+              Auto Cash Out
+            </label>
+            <input type="number" id="auto-cashout" class="auto-input" value="2.00" min="1.01" step="0.1" disabled />
+          </div>
+
+          <button class="btn btn-primary btn-lg crash-btn" id="action-btn">
+            <span class="btn-text">Place Bet</span>
+          </button>
+        </div>
+
+        <!-- Potential Win -->
+        <div class="potential-win" id="potential-win"></div>
+      </div>
+
+      <!-- How to Play -->
+      <div class="game-rules">
+        <h3>How to Play</h3>
+        <ul>
+          <li>Place your bet before the round starts</li>
+          <li>Watch the multiplier rise from 1.00×</li>
+          <li>Cash out anytime to lock in your win</li>
+          <li>If it crashes before you cash out, you lose!</li>
+          <li>Set auto cash-out to automatically collect at a target multiplier</li>
+        </ul>
+      </div>
+    </main>
+
+    <footer class="global-footer">
+      <p>Virtual credits only. No real money. Play responsibly. © 2026 GamblingDen</p>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script src="crash.js"></script>
+  </body>
+</html>

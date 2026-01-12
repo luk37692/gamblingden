@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Premium Slot Machine - 5 paylines, free spins, wild symbols" />
+    <title>Slot Machine — GamblingDen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Global Header -->
+    <header class="global-header">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">🎰</span>
+          <span class="logo-text">GamblingDen</span>
+        </a>
+      </div>
+      <div class="header-center">
+        <div class="xp-bar-container">
+          <div class="xp-level">
+            <span class="level-badge" id="level-badge">Lvl 1</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            <span class="xp-text" id="xp-text">0 / 100 XP</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">
+          <span class="sound-on">🔊</span>
+          <span class="sound-off">🔇</span>
+        </button>
+        <div class="balance-display" id="balance-display">
+          <span class="balance-label">Balance</span>
+          <span class="balance-amount" id="balance-amount">€100.00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Main Content -->
+    <main class="game-container">
+      <div class="game-header">
+        <h1 class="game-title">🎰 Slot Machine</h1>
+        <a href="index.html" class="back-link">← Back to Lobby</a>
+      </div>
+
+      <!-- Free Spins Banner -->
+      <div class="free-spins-banner" id="free-spins-banner">
+        <span class="free-spins-text">⭐ FREE SPINS BONUS!</span>
+        <span class="free-spins-count" id="free-spins-count">5</span>
+        <span class="free-spins-text">spins remaining (2× multiplier)</span>
+      </div>
+
+      <div class="slot-machine">
+        <!-- Slot Display -->
+        <div class="slot-display">
+          <div class="payline-indicators">
+            <div class="payline-dot active" data-line="1" title="Line 1: Top"></div>
+            <div class="payline-dot active" data-line="2" title="Line 2: Center"></div>
+            <div class="payline-dot active" data-line="3" title="Line 3: Bottom"></div>
+            <div class="payline-dot active" data-line="4" title="Line 4: Diagonal ↘"></div>
+            <div class="payline-dot active" data-line="5" title="Line 5: Diagonal ↗"></div>
+          </div>
+          <div class="reels-container" id="reels-container">
+            <div class="reel" id="reel-0">
+              <div class="reel-symbols">
+                <div class="symbol" data-row="0">🍒</div>
+                <div class="symbol center" data-row="1">🍋</div>
+                <div class="symbol" data-row="2">🔔</div>
+              </div>
+            </div>
+            <div class="reel" id="reel-1">
+              <div class="reel-symbols">
+                <div class="symbol" data-row="0">🍒</div>
+                <div class="symbol center" data-row="1">🍋</div>
+                <div class="symbol" data-row="2">🔔</div>
+              </div>
+            </div>
+            <div class="reel" id="reel-2">
+              <div class="reel-symbols">
+                <div class="symbol" data-row="0">🍒</div>
+                <div class="symbol center" data-row="1">🍋</div>
+                <div class="symbol" data-row="2">🔔</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info Display -->
+        <div class="slot-info">
+          <div class="info-item">
+            <div class="info-label">Bet / Line</div>
+            <div class="info-value" id="bet-per-line">€1.00</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Lines</div>
+            <div class="info-value" id="active-lines">5</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Total Bet</div>
+            <div class="info-value" id="total-bet">€5.00</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Last Win</div>
+            <div class="info-value win" id="last-win">€0.00</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="slot-controls">
+          <div class="control-group">
+            <span class="control-label">Bet:</span>
+            <select id="bet-select" class="bet-select">
+              <option value="0.10">€0.10</option>
+              <option value="0.25">€0.25</option>
+              <option value="0.50">€0.50</option>
+              <option value="1.00" selected>€1.00</option>
+              <option value="2.00">€2.00</option>
+              <option value="5.00">€5.00</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Lines:</span>
+            <select id="lines-select" class="lines-select">
+              <option value="1">1 line</option>
+              <option value="3">3 lines</option>
+              <option value="5" selected>5 lines</option>
+            </select>
+          </div>
+          <button id="spin-btn" class="btn btn-primary spin-btn">SPIN</button>
+          <button id="auto-spin-btn" class="auto-spin-toggle">
+            <span>Auto</span>
+            <span id="auto-spin-count"></span>
+          </button>
+        </div>
+
+        <!-- Result Message -->
+        <div class="slot-message" id="slot-message"></div>
+
+        <!-- Paytable -->
+        <div class="paytable">
+          <h3 class="paytable-title">Paytable (3 matching symbols)</h3>
+          <div class="paytable-grid">
+            <div class="paytable-item">
+              <span class="paytable-symbol">🍒</span>
+              <span class="paytable-mult">2×</span>
+            </div>
+            <div class="paytable-item">
+              <span class="paytable-symbol">🍋</span>
+              <span class="paytable-mult">3×</span>
+            </div>
+            <div class="paytable-item">
+              <span class="paytable-symbol">🔔</span>
+              <span class="paytable-mult">5×</span>
+            </div>
+            <div class="paytable-item">
+              <span class="paytable-symbol">7️⃣</span>
+              <span class="paytable-mult">10×</span>
+            </div>
+            <div class="paytable-item">
+              <span class="paytable-symbol">⭐</span>
+              <span class="paytable-mult">20× / Wild</span>
+            </div>
+            <div class="paytable-item">
+              <span class="paytable-symbol">💎</span>
+              <span class="paytable-mult">50× / Scatter</span>
+            </div>
+          </div>
+          <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+            ⭐ Wild substitutes for any symbol. 💎 3 Scatters trigger 5 Free Spins with 2× multiplier.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="global-footer">
+      <p>Virtual credits only. No real money. Play responsibly. © 2026 GamblingDen</p>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script src="slots.js"></script>
+  </body>
+</html>
