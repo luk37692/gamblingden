@@ -312,8 +312,8 @@
   // ═══════════════════════════════════════════════════════════════════════════
   function generateCrashPoint() {
     // Provably fair-ish crash point generation
-    // House edge of ~3%
-    const e = 0.97;
+    // House edge of ~1% (was 3%)
+    const e = 0.99;
     const h = GD.randomInt(0, 10000000) / 10000000;
     return Math.max(1.0, Math.floor((100 * e) / (h * 100)) / 100);
   }
