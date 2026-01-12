@@ -344,25 +344,45 @@
 
   async function animateReels(stops, durations) {
     // Start all reel animations
-    reelEls.forEach((reel, i) => {
-      reel.style.setProperty("--spin-duration", `${durations[i]}ms`);
-      reel.classList.add("spinning");
+    const promises = reelEls.map((reel, i) => {
+      return new Promise((resolve) => {
+        const symbolEls = reel.querySelectorAll(".symbol");
+        const duration = durations[i];
+        const startTime = performance.now();
+        
+        // Add blurring effect
+        reel.classList.add("spinning");
+
+        // Rapidly change symbols to simulate spinning
+        const interval = setInterval(() => {
+          for (let row = 0; row < 3; row++) {
+            const randomSymbol = SYMBOLS[GD.randomInt(0, SYMBOLS.length - 1)];
+            symbolEls[row].textContent = SYMBOL_TO_EMOJI[randomSymbol];
+          }
+        }, 50); // Change every 50ms
+
+        // Stop after duration
+        setTimeout(() => {
+          clearInterval(interval);
+          reel.classList.remove("spinning");
+          
+          // Set final symbols
+          grid[i] = getReelWindow(i, stops[i]);
+          for (let row = 0; row < 3; row++) {
+            symbolEls[row].textContent = SYMBOL_TO_EMOJI[grid[i][row]];
+          }
+
+          // Add landing bounce effect
+          reel.classList.add("bounce");
+          setTimeout(() => reel.classList.remove("bounce"), 300);
+
+          GD.playSound("click");
+          resolve();
+        }, duration);
+      });
     });
 
-    // Wait for each reel to finish and update
-    for (let i = 0; i < 3; i++) {
-      await delay(durations[i]);
-      
-      // Update reel display
-      grid[i] = getReelWindow(i, stops[i]);
-      const symbolEls = reelEls[i].querySelectorAll(".symbol");
-      for (let row = 0; row < 3; row++) {
-        symbolEls[row].textContent = SYMBOL_TO_EMOJI[grid[i][row]];
-      }
-      
-      reelEls[i].classList.remove("spinning");
-      GD.playSound("click");
-    }
+    await Promise.all(promises);
   }
 
   function delay(ms) {

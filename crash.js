@@ -369,7 +369,8 @@
     const t = elapsed / 1000; // time in seconds
 
     // Exponential growth formula
-    currentMultiplier = Math.pow(Math.E, 0.06 * t * t);
+    // Slower growth: 0.04 coefficient (was 0.06)
+    currentMultiplier = Math.pow(Math.E, 0.04 * t * t);
     currentMultiplier = Math.floor(currentMultiplier * 100) / 100;
 
     graphPoints.push(currentMultiplier);

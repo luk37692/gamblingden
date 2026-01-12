@@ -183,193 +183,49 @@
     return result;
   }
 
-  function buildScratchGrid() {
-    scratchGrid.innerHTML = "";
-
-    for (let i = 0; i < 9; i++) {
-      const cell = document.createElement("div");
-      cell.className = "scratch-cell";
-      cell.dataset.index = i;
-
-      // Prize layer
-      const prize = document.createElement("div");
-      prize.className = "prize";
-      prize.textContent = grid[i];
-      cell.appendChild(prize);
-
-      // Canvas layer for scratching
-      const canvas = document.createElement("canvas");
-      canvas.width = 120;
-      canvas.height = 120;
-      cell.appendChild(canvas);
-
-      // Draw scratch surface
-      const ctx = canvas.getContext("2d");
-      drawScratchSurface(ctx, canvas.width, canvas.height);
-
-      // Event handlers
-      let isMouseDown = false;
-
-      const startScratch = (e) => {
-        if (gameEnded) return;
-        isMouseDown = true;
-        scratch(e, canvas, ctx, i);
-      };
-
-      const moveScratch = (e) => {
-        if (!isMouseDown || gameEnded) return;
-        scratch(e, canvas, ctx, i);
-      };
-
-      const endScratch = () => {
-        isMouseDown = false;
-      };
-
-      canvas.addEventListener("mousedown", startScratch);
-      canvas.addEventListener("mousemove", moveScratch);
-      canvas.addEventListener("mouseup", endScratch);
-      canvas.addEventListener("mouseleave", endScratch);
-
-      canvas.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        startScratch(e);
-      });
-      canvas.addEventListener("touchmove", (e) => {
-        e.preventDefault();
-        moveScratch(e);
-      });
-      canvas.addEventListener("touchend", endScratch);
-
-      scratchGrid.appendChild(cell);
-    }
-  }
-
-  function drawScratchSurface(ctx, width, height) {
-    // Gold/silver gradient
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, "#d4af37");
-    gradient.addColorStop(0.5, "#f5e6a3");
-    gradient.addColorStop(1, "#d4af37");
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-
-    // Add texture pattern
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-    for (let i = 0; i < 50; i++) {
-      const x = Math.random() * width;
-      const y = Math.random() * height;
-      const size = Math.random() * 3 + 1;
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Add "SCRATCH" text
-    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-    ctx.font = "bold 14px Inter, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("SCRATCH", width / 2, height / 2);
-  }
-
-  function scratch(e, canvas, ctx, index) {
-    if (revealed[index]) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    let x, y;
-    if (e.touches) {
-      x = (e.touches[0].clientX - rect.left) * scaleX;
-      y = (e.touches[0].clientY - rect.top) * scaleY;
-    } else {
-      x = (e.clientX - rect.left) * scaleX;
-      y = (e.clientY - rect.top) * scaleY;
-    }
-
-    // Erase in a circular area
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.beginPath();
-    ctx.arc(x, y, 20, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Check if enough is scratched
-    checkRevealProgress(canvas, ctx, index);
-  }
-
-  function checkRevealProgress(canvas, ctx, index) {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    let transparent = 0;
-    const total = imageData.data.length / 4;
-
-    for (let i = 3; i < imageData.data.length; i += 4) {
-      if (imageData.data[i] < 128) transparent++;
-    }
-
-    const percentRevealed = transparent / total;
-
-    if (percentRevealed > 0.4 && !revealed[index]) {
-      revealCell(index);
-    }
-  }
-
-  function revealCell(index) {
-    if (revealed[index]) return;
-
-    revealed[index] = true;
-    const cell = scratchGrid.children[index];
-    const canvas = cell.querySelector("canvas");
-    const prize = cell.querySelector(".prize");
-
-    // Hide canvas
-    canvas.style.opacity = "0";
-    prize.classList.add("revealed");
-
-    GD.playSound("click");
-
-    // Check if all revealed
-    if (revealed.every((r) => r)) {
-      checkWin();
-    }
-  }
-
-  function revealAll() {
-    if (gameEnded) return;
-
-    for (let i = 0; i < 9; i++) {
-      revealCell(i);
-    }
-  }
-
   function checkWin() {
     if (gameEnded) return;
     gameEnded = true;
 
-    // Count symbols
-    const counts = {};
-    for (const symbol of grid) {
-      counts[symbol] = (counts[symbol] || 0) + 1;
-    }
+    // Define win lines (indices)
+    // 0 1 2
+    // 3 4 5
+    // 6 7 8
+    const lines = [
+      [0, 1, 2], // Rows
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6], // Cols
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8], // Diagonals
+      [2, 4, 6],
+    ];
 
-    // Find winning symbol (3 or more)
+    let winningLine = null;
     let winSymbol = null;
-    let winCount = 0;
 
-    for (const [symbol, count] of Object.entries(counts)) {
-      if (count >= 3 && (!winSymbol || PRIZE_MULTIPLIERS[symbol] > PRIZE_MULTIPLIERS[winSymbol])) {
-        winSymbol = symbol;
-        winCount = count;
+    // Check for 3 matching symbols in a line
+    for (const line of lines) {
+      const [a, b, c] = line;
+      const sA = grid[a];
+      const sB = grid[b];
+      const sC = grid[c];
+
+      if (sA === sB && sB === sC) {
+        // Found a win!
+        // If multiple wins, take the highest value (rare)
+        if (!winSymbol || PRIZE_MULTIPLIERS[sA] > PRIZE_MULTIPLIERS[winSymbol]) {
+          winSymbol = sA;
+          winningLine = line;
+        }
       }
     }
 
     // Highlight winning cells
-    if (winSymbol) {
-      grid.forEach((symbol, i) => {
-        if (symbol === winSymbol) {
-          scratchGrid.children[i].classList.add("winner");
-        }
+    if (winningLine) {
+      winningLine.forEach((index) => {
+        scratchGrid.children[index].classList.add("winner");
       });
     }
 
@@ -388,7 +244,7 @@
           GD.playSound("win");
         }
 
-        GD.showToast(`Matched ${winCount}× ${winSymbol} for ${GD.formatEuro(winAmount)}!`, "success");
+        GD.showToast(`Line Match! ${winSymbol} for ${GD.formatEuro(winAmount)}!`, "success");
         showResult(true, winAmount);
       } else {
         GD.updateStats({ noWin: true, game: "scratch" });

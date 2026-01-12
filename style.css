@@ -1140,16 +1140,19 @@ button {
 }
 
 .reel.spinning .reel-symbols {
-  animation: reelSpin var(--spin-duration, 1s) linear;
+  /* Blur effect during spin */
+  filter: blur(2px);
+  transform: translateY(0); /* Ensure no slide */
 }
 
-@keyframes reelSpin {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-300px);
-  }
+.reel.bounce .reel-symbols {
+  animation: reelBounce 0.3s ease-out;
+}
+
+@keyframes reelBounce {
+  0% { transform: translateY(-20px); }
+  40% { transform: translateY(10px); }
+  100% { transform: translateY(0); }
 }
 
 /* Slot controls */
