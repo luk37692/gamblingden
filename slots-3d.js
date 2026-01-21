@@ -23,27 +23,38 @@ const Slots3D = (function () {
   // Configuration from main logic (to be sync)
   const SYMBOLS_MAP = ["CHERRY", "LEMON", "BELL", "SEVEN", "WILD", "SCATTER"];
   
-  function init(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+  function init(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      console.error('Slots3D: Canvas not found:', canvasId);
+      return;
+    }
+
+    const container = canvas.parentElement;
+    const width = container.clientWidth || 600;
+    const height = container.clientHeight || 300;
+
+    console.log('Slots3D init:', width, 'x', height);
 
     // SCENE
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x161b27); // Match --bg-card
+    scene.background = new THREE.Color(0x0c1018);
 
-    // CAMERA
-    // Use Orthographic to avoid perspective distortion on the edges (makes it look more like a classic flat slot but 3D)
-    // Or Perspective for coolness. Let's go Perspective but with narrow FOV and far distance.
-    const aspect = container.clientWidth / container.clientHeight;
-    camera = new THREE.PerspectiveCamera(30, aspect, 0.1, 1000);
-    camera.position.z = 22;
+    // CAMERA - closer and wider FOV to see the reels
+    const aspect = width / height;
+    camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
+    camera.position.z = 12;
     camera.position.y = 0; 
 
-    // RENDERER
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    container.appendChild(renderer.domElement);
+    // RENDERER - use existing canvas
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    } catch(e) {
+      console.error('WebGL failed:', e);
+      return;
+    }
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // LIGHTING
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
@@ -71,12 +82,16 @@ const Slots3D = (function () {
 
     // Resize
     window.addEventListener('resize', () => {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
+        const w = container.clientWidth || 600;
+        const h = container.clientHeight || 300;
+        if (w > 0 && h > 0) {
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
     });
+
+    console.log('Slots3D: Initialized successfully');
   }
 
   function createSymbolAtlas() {
@@ -123,41 +138,33 @@ const Slots3D = (function () {
   }
 
   function createReels() {
-    // Cylinder: RadiusTop, RadiusBot, Height, RadialSegs, HeightSegs, OpenEnded
-    // Rotated 90deg Z: Height (4) becomes Width (X axis).
-    // Radial Segments wrap around the X axis.
-    const geometry = new THREE.CylinderGeometry(REEL_RADIUS, REEL_RADIUS, 4, SEGMENTS, 1, true);
+    // Cylinder with smaller radius for better visibility
+    const geometry = new THREE.CylinderGeometry(2, 2, 2.5, SEGMENTS, 1, true);
     geometry.rotateZ(Math.PI / 2); 
     
-    // Texture is Horizontal: [Cherry][Lemon]...
-    // Mapped to Cylinder Circumference (U).
-    // We want 2 full sets of symbols around the reel.
-    // So we repeat U 2 times.
+    // Texture mapping
     symbolTexture.repeat.set(2, 1); 
-    
-    // Adjust texture offset if needed to align symbol 0
-    // symbolTexture.offset.x = ?
 
     const material = new THREE.MeshStandardMaterial({ 
         map: symbolTexture,
         roughness: 0.3,
-        metalness: 0.2
+        metalness: 0.2,
+        side: THREE.DoubleSide
     });
 
     for(let i=0; i<3; i++) {
         const reel = new THREE.Mesh(geometry, material.clone());
-        reel.position.x = (i - 1) * 4.5; // Spread them out more: -4.5, 0, 4.5
+        reel.position.x = (i - 1) * 3.2; // -3.2, 0, 3.2
         scene.add(reel);
         reels.push(reel);
         
-        // Initial random rotation
-        // 12 slots total (2 sets of 6).
-        // Angle per slot = 2PI / 12 = PI / 6.
+        // Initial rotation
         const randomSlot = Math.floor(Math.random() * SYMBOLS_ON_REEL);
         reel.rotation.x = randomSlot * ANGLE_PER_SYMBOL;
         
         reel.userData = { isSpinning: false };
     }
+    console.log('Slots3D: Created', reels.length, 'reels');
   }
 
   // Animation Loop

@@ -103,8 +103,9 @@
   
   // Initialize 3D Scene
   if (typeof Slots3D !== 'undefined') {
-    Slots3D.init('slots-canvas-container');
+    Slots3D.init('slots-canvas');
   } else {
+    console.warn('Slots3D not available, using fallback');
     renderGrid(); // Fallback
   }
 
