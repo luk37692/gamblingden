@@ -70,27 +70,8 @@
             <div class="payline-dot active" data-line="5" title="Line 5: Diagonal ↗"></div>
           </div>
           <div class="reels-container" id="reels-container">
-            <div class="reel" id="reel-0">
-              <div class="reel-symbols">
-                <div class="symbol" data-row="0">🍒</div>
-                <div class="symbol center" data-row="1">🍋</div>
-                <div class="symbol" data-row="2">🔔</div>
-              </div>
-            </div>
-            <div class="reel" id="reel-1">
-              <div class="reel-symbols">
-                <div class="symbol" data-row="0">🍒</div>
-                <div class="symbol center" data-row="1">🍋</div>
-                <div class="symbol" data-row="2">🔔</div>
-              </div>
-            </div>
-            <div class="reel" id="reel-2">
-              <div class="reel-symbols">
-                <div class="symbol" data-row="0">🍒</div>
-                <div class="symbol center" data-row="1">🍋</div>
-                <div class="symbol" data-row="2">🔔</div>
-              </div>
-            </div>
+            <!-- 3D Canvas will be injected here, replacing the DOM Reels -->
+            <div id="slots-canvas-container" style="width: 100%; height: 100%;"></div>
           </div>
         </div>
 
@@ -185,7 +166,9 @@
       <p>Virtual credits only. No real money. Play responsibly. © 2026 GamblingDen</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="shared.js"></script>
+    <script src="slots-3d.js"></script>
     <script src="slots.js"></script>
   </body>
 </html>

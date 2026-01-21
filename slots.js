@@ -98,28 +98,24 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // INITIALIZATION
   // ═══════════════════════════════════════════════════════════════════════════
-  init();
-
-  function init() {
-    updateUI();
-    updatePaylineIndicators();
-    randomizeInitialGrid();
-    renderGrid();
-
-    // Event listeners
-    GD.on("balance:change", updateBalanceUI);
-    GD.on("xp:change", updateXPUI);
-
-    betSelect.addEventListener("change", updateUI);
-    linesSelect.addEventListener("change", () => {
-      updateUI();
-      updatePaylineIndicators();
-    });
-    spinBtn.addEventListener("click", onSpin);
-    autoSpinBtn.addEventListener("click", toggleAutoSpin);
-    soundToggle.addEventListener("click", toggleSound);
+  updateBalanceUI();
+  updateSpinAvailability();
+  
+  // Initialize 3D Scene
+  if (typeof Slots3D !== 'undefined') {
+    Slots3D.init('slots-canvas-container');
+  } else {
+    renderGrid(); // Fallback
   }
 
+  spinBtn.addEventListener("click", onSpin);
+  autoSpinBtn.addEventListener("click", toggleAutoSpin);
+  soundToggle.addEventListener("click", toggleSound);
+  betSelect.addEventListener("change", updateUI);
+  linesSelect.addEventListener("change", () => {
+    updateUI();
+    updatePaylineIndicators();
+  });
   // ═══════════════════════════════════════════════════════════════════════════
   // UI UPDATES
   // ═══════════════════════════════════════════════════════════════════════════
@@ -287,14 +283,19 @@
     const stops = REELS.map((reel) => GD.randomInt(0, reel.length - 1));
 
     // Animate reels with stagger
-    const durations = [800, 1000, 1200];
-    await animateReels(stops, durations);
+    if (typeof Slots3D !== 'undefined') {
+       await Slots3D.spinTo(stops, REELS);
+    } else {
+       // Old 2D Animation Fallback
+       const durations = [800, 1000, 1200];
+       await animateReels(stops, durations);
+    }
 
     // Update grid with final results
     for (let r = 0; r < 3; r++) {
       grid[r] = getReelWindow(r, stops[r]);
     }
-    renderGrid();
+    // renderGrid(); // 3D doesn't need this, but we might want to keep it to update invisible DOM for accessibility/logic if needed
 
     // Evaluate wins
     const { totalWin, winningPositions, scatterCount } = evaluateWins(bet, lines);
