@@ -439,14 +439,35 @@
 
   function initAudio() {
     if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
     }
     return audioCtx;
   }
 
+  // Resume context on user interaction if needed
+  function resumeAudioContext() {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  document.addEventListener('click', () => {
+    initAudio(); // Ensure created on first click if not already
+    resumeAudioContext();
+  }, { once: false, passive: true });
+
+  document.addEventListener('keydown', () => {
+     initAudio();
+     resumeAudioContext();
+  }, { once: false, passive: true });
+
   function setSoundEnabled(enabled) {
     _soundEnabled = !!enabled;
     saveJSON(STORAGE_KEYS.SETTINGS, { sound: _soundEnabled });
+    if (_soundEnabled) resumeAudioContext();
   }
 
   function isSoundEnabled() {
@@ -458,6 +479,7 @@
 
     try {
       const ctx = initAudio();
+      if (!ctx) return;
       if (ctx.state === "suspended") ctx.resume();
 
       const oscillator = ctx.createOscillator();
