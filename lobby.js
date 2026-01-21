@@ -37,7 +37,7 @@
   updateStats();
   renderAchievements();
   checkDailyBonus();
-  initParticles();
+  // initParticles();
 
   // Event listeners
   GD.on("balance:change", updateBalanceUI);

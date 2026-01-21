@@ -13,17 +13,18 @@
     "🍒": 2,
     "🍀": 5,
     "🔔": 10,
-    "⭐": 20,
-    "💎": 50,
+    "⭐": 15, // Was 20
+    "💎": 40, // Was 50
   };
 
   // Symbol weights (more common symbols have higher weight)
+  // Adjusted to make high wins rarer
   const SYMBOL_WEIGHTS = {
-    "🍒": 40,
-    "🍀": 30,
-    "🔔": 18,
-    "⭐": 9,
-    "💎": 3,
+    "🍒": 50, // Increased from 40
+    "🍀": 35, // Increased from 30
+    "🔔": 15, // Decreased from 18
+    "⭐": 6,  // Decreased from 9
+    "💎": 2,  // Decreased from 3
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
