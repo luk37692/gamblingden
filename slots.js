@@ -219,20 +219,22 @@
     }
   }
 
-  function getReelWindow(reelIndex, centerIdx) {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GRID RENDERING
+  // ═══════════════════════════════════════════════════════════════════════════
+  function getReelWindow(reelIndex, stopIndex) {
     const reel = REELS[reelIndex];
     const len = reel.length;
-    return [
-      reel[(centerIdx - 1 + len) % len], // Top
-      reel[centerIdx], // Center
-      reel[(centerIdx + 1) % len], // Bottom
-    ];
+    const prev = (stopIndex - 1 + len) % len;
+    const next = (stopIndex + 1) % len;
+    return [reel[prev], reel[stopIndex], reel[next]];
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // RENDERING
-  // ═══════════════════════════════════════════════════════════════════════════
   function renderGrid() {
+    // Check if we are in 3D mode (DOM reels hidden)
+    const reel0 = document.getElementById("reel-0");
+    if (!reel0 || getComputedStyle(reel0).display === "none") return;
+
     for (let r = 0; r < 3; r++) {
       const symbolEls = reelEls[r].querySelectorAll(".symbol");
       for (let row = 0; row < 3; row++) {
@@ -243,6 +245,9 @@
   }
 
   function highlightWinningSymbols(winningPositions) {
+    const reel0 = document.getElementById("reel-0");
+    if (!reel0 || getComputedStyle(reel0).display === "none") return;
+    
     winningPositions.forEach(([reel, row]) => {
       const symbolEls = reelEls[reel].querySelectorAll(".symbol");
       symbolEls[row].classList.add("winning");

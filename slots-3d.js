@@ -66,6 +66,9 @@ const Slots3D = (function () {
     // Loop
     animate();
 
+    // Trigger initial render
+    renderer.render(scene, camera);
+
     // Resize
     window.addEventListener('resize', () => {
         const w = container.clientWidth;
@@ -79,112 +82,81 @@ const Slots3D = (function () {
   function createSymbolAtlas() {
     const size = 512; // Each symbol is 512x512
     const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size * SYMBOL_COUNT;
+    canvas.width = size * SYMBOL_COUNT; // Horizontal strip
+    canvas.height = size;
     const ctx = canvas.getContext('2d');
 
-    // Background for strip
+    // Background
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const emojis = ["🍒", "🍋", "🔔", "7️⃣", "⭐", "💎"];
-    const colors = ["#ffcdd2", "#fff9c4", "#fff59d", "#bbdefb", "#e1bee7", "#b2dfdb"]; // Light backdrops
 
     emojis.forEach((emoji, i) => {
-        const y = i * size;
+        const x = i * size;
         
         // Background panel
-        // ctx.fillStyle = colors[i];
-        // ctx.fillRect(0, y, size, size);
-        const gradient = ctx.createLinearGradient(0, y, 0, y + size);
+        const gradient = ctx.createLinearGradient(x, 0, x, size); // Vertical gradient per cell
         gradient.addColorStop(0, '#f1f5f9');
         gradient.addColorStop(0.5, '#ffffff');
         gradient.addColorStop(1, '#f1f5f9');
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, y, size, size);
+        ctx.fillRect(x, 0, size, size);
 
-        // Border line
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(size, y);
-        ctx.stroke();
+        // Border line (Vertical lines between symbols)
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(x + size - 2, 0, 4, size);
 
         // Symbol
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `${size * 0.6}px serif`; // Emoji font
+        ctx.font = `${size * 0.6}px serif`; 
         ctx.fillStyle = "#000";
-        ctx.fillText(emoji, size / 2, y + size / 2 + (size * 0.05)); // Slight offset
+        ctx.fillText(emoji, x + size / 2, size / 2 + (size * 0.05)); 
     });
 
     const tex = new THREE.CanvasTexture(canvas);
+    // Horizontal wrapping
     tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.RepeatWrapping;
-    // We want the texture to tile vertically? 
-    // Actually, we map UVs specifically.
+    tex.wrapT = THREE.ClampToEdgeWrapping;
     return tex;
   }
 
   function createReels() {
+    // Cylinder: RadiusTop, RadiusBot, Height, RadialSegs, HeightSegs, OpenEnded
+    // Rotated 90deg Z: Height (4) becomes Width (X axis).
+    // Radial Segments wrap around the X axis.
     const geometry = new THREE.CylinderGeometry(REEL_RADIUS, REEL_RADIUS, 4, SEGMENTS, 1, true);
-    
-    // Rotate cylinder so side faces camera
     geometry.rotateZ(Math.PI / 2); 
-    // Now cylinder lays flat like a rolling pin.
-    // Wait, cylinder default is standing up (Y axis). rotateZ(90) makes it lay along X.
-    // We want reels spinning vertically (rotating around X axis), so they should be cylinders along X axis?
-    // No. A slot reel is a wheel. Like a car tire.
-    // If we look at it from front, we see the tread.
-    // So the cylinder axis is X (left-right).
     
-    // Default Cylinder is vertical (Y).
-    // rotateZ(90) puts axis on X.
-    
-    // TEXTURE MAPPING SETUP
-    // We need the texture to wrap around the "tread" (circumference).
-    // The texture atlas has 6 sectors.
-    // We want to map these 6 sectors repeated twice around the cylinder (12 slots).
-    // height of texture = 6 units.
-    // Circumference UV goes 0 to 1.
-    // So distinct symbols are at UV V = 0, 1/12, 2/12 ... 
-    
-    // Since we rotated geometry, we need to correct UVs or just use material rotation.
-    // By default Cylinder UVs: u goes around, v goes height.
-    // Since we rotated the mesh 90deg, the "height" is now left-right (X), and "around" is rotation around X.
-    // We want the texture strip to run "around" the cylinder.
-    // So the Atlas (Vertical strip) needs to map to U (circumference).
-    // But Texture is vertical. 
-    // Let's easier: Create texture horizontally? Or rotate texture 90deg?
-    symbolTexture.center.set(0.5, 0.5);
-    symbolTexture.rotation = Math.PI / 2; 
-    
-    // Now texture runs along U.
-    // We want 2 repeats of the 6-symbol strip.
+    // Texture is Horizontal: [Cherry][Lemon]...
+    // Mapped to Cylinder Circumference (U).
+    // We want 2 full sets of symbols around the reel.
+    // So we repeat U 2 times.
     symbolTexture.repeat.set(2, 1); 
     
+    // Adjust texture offset if needed to align symbol 0
+    // symbolTexture.offset.x = ?
+
     const material = new THREE.MeshStandardMaterial({ 
         map: symbolTexture,
-        roughness: 0.4,
-        metalness: 0.1
+        roughness: 0.3,
+        metalness: 0.2
     });
 
     for(let i=0; i<3; i++) {
         const reel = new THREE.Mesh(geometry, material.clone());
-        reel.position.x = (i - 1) * 3.5; // -3.5, 0, 3.5
+        reel.position.x = (i - 1) * 4.5; // Spread them out more: -4.5, 0, 4.5
         scene.add(reel);
         reels.push(reel);
         
-        // Initial random rotation snapped to symbol
-        const randomSymbol = Math.floor(Math.random() * SYMBOLS_ON_REEL);
-        reel.rotation.x = randomSymbol * ANGLE_PER_SYMBOL;
+        // Initial random rotation
+        // 12 slots total (2 sets of 6).
+        // Angle per slot = 2PI / 12 = PI / 6.
+        const randomSlot = Math.floor(Math.random() * SYMBOLS_ON_REEL);
+        reel.rotation.x = randomSlot * ANGLE_PER_SYMBOL;
         
-        // Store current logical position
-        reel.userData = {
-            currentAngle: reel.rotation.x,
-            isSpinning: false
-        };
+        reel.userData = { isSpinning: false };
     }
   }
 

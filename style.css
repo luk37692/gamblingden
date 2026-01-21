@@ -1068,10 +1068,23 @@ button {
 
 .reels-container {
   display: flex;
+  justify-content: center; /* Center the canvas if needed */
   gap: 8px;
+  height: 300px; /* Explicit height for Canvas */
+  position: relative;
+}
+
+#slots-canvas-container {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #1e2637 0%, #0c0f15 100%);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
 .reel {
+  /* Hide old reels if they exist, or keep them for layout if we revert */
+  display: none; 
   width: 100px;
   height: 300px;
   background: linear-gradient(180deg, #0a0d14, #0f1320);
